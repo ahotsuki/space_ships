@@ -12,6 +12,7 @@ function draw() {
 }
 
 socket.on("update", (data) => {
-  console.log(data.ships[0][1].speed);
   SHIPS = data.ships;
 });
+
+socket.on("collision", (data) => console.log(data));

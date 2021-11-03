@@ -4,7 +4,7 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const Game = require("./game/index");
-const FPS = 1000 / 60;
+const FPS = 1000 / 30;
 
 app.use(express.static(path.join(__dirname, "client")));
 
@@ -29,6 +29,9 @@ io.on("connection", (socket) => {
 function update() {
   io.emit("update", { ships: Game.getShips() });
   Game.updateShips();
+  Game.getShips().forEach((s) => {
+    io.to(s[0]).emit("collision", { message: Game.checkShipCollision(...s) });
+  });
 }
 
 const gameLoop = new setInterval(update, FPS);

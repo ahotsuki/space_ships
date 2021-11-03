@@ -21,6 +21,16 @@ function updateShips() {
   SHIPS.forEach((s) => s.update());
 }
 
+function checkShipCollision(id, ship) {
+  let a = false;
+  SHIPS.forEach((s, k) => {
+    if (k !== id) {
+      if (Math.abs(s.x - ship.x) < 50) a = true;
+    }
+  });
+  return a;
+}
+
 // function lineIntersection(a, b, c, d) {
 //   return (
 //     pointsDirection(a, c, d) !== pointsDirection(b, c, d) &&
@@ -32,4 +42,11 @@ function updateShips() {
 //   return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x);
 // }
 
-module.exports = { addShip, getShips, deleteShip, getShip, updateShips };
+module.exports = {
+  addShip,
+  getShips,
+  deleteShip,
+  getShip,
+  updateShips,
+  checkShipCollision,
+};
