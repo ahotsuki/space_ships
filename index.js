@@ -15,6 +15,7 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   console.log("Client connected.");
   Game.addShip(socket.id);
+  Game.addAsteroid();
 
   socket.on("forward", () => (Game.getShip(socket.id).boosting = true));
   socket.on("clockwise", () => Game.getShip(socket.id).rotcw());
@@ -27,11 +28,11 @@ io.on("connection", (socket) => {
 });
 
 function update() {
-  io.emit("update", { ships: Game.getShips() });
+  io.emit("update", { ships: Game.getShips(), asteroids: Game.getAsteroids() });
   Game.updateShips();
-  Game.getShips().forEach((s) => {
-    io.to(s[0]).emit("collision", { message: Game.checkShipCollision(...s) });
-  });
+  // Game.getShips().forEach((s) => {
+  //   io.to(s[0]).emit("collision", { message: Game.checkShipCollision(...s) });
+  // });
 }
 
 const gameLoop = new setInterval(update, FPS);

@@ -7,7 +7,8 @@ class Ship {
   #boost = [];
   #velocity = [0, 0];
   #friction = 0.9;
-  constructor(x, y, size) {
+  #GAME = 0;
+  constructor(x, y, size, GAME, id) {
     this.x = x;
     this.y = y;
     this.#size = size;
@@ -17,6 +18,8 @@ class Ship {
     this.rotSpeed = Math.PI / 20;
     this.lines = [];
     this.boosting = false;
+    this.#GAME = GAME;
+    this.id = id;
 
     const ts = arrayMultiply(trianglePnt(Math.PI / 6), this.#size);
     this.#points.push([this.x + (this.#size * 2) / 5, this.y]);
@@ -36,6 +39,11 @@ class Ship {
     this.#movePnts(this.#velocity);
 
     this.#velocity = arrayMultiply(this.#velocity, this.#friction);
+  }
+
+  fire() {
+    this.#GAME.addBullet();
+    // return [this.#heading, this.#points[0]];
   }
 
   forward() {

@@ -1,8 +1,14 @@
 const Ship = require("./ship");
 const SHIPS = new Map();
 
+const Asteroid = require("./asteroid");
+let ASTEROIDS = [];
+
+const Bullet = require("./bullet");
+let BULLETS = [];
+
 function addShip(id) {
-  SHIPS.set(id, new Ship(100, 100, 30));
+  SHIPS.set(id, new Ship(100, 100, 30, this, id));
 }
 
 function getShips() {
@@ -31,6 +37,19 @@ function checkShipCollision(id, ship) {
   return a;
 }
 
+function addAsteroid() {
+  ASTEROIDS = [];
+  ASTEROIDS.push(new Asteroid(200, 200, 3));
+}
+
+function getAsteroids() {
+  return ASTEROIDS;
+}
+
+function addBullet() {
+  console.log("shots fired!");
+}
+
 // function lineIntersection(a, b, c, d) {
 //   return (
 //     pointsDirection(a, c, d) !== pointsDirection(b, c, d) &&
@@ -49,4 +68,6 @@ module.exports = {
   getShip,
   updateShips,
   checkShipCollision,
+  addAsteroid,
+  getAsteroids,
 };

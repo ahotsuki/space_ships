@@ -9,10 +9,12 @@ let x = 0,
 function draw() {
   background(0);
   renderShips();
+  renderAsteroids();
 }
 
 socket.on("update", (data) => {
   SHIPS = data.ships;
+  ASTEROIDS = data.asteroids;
 });
 
 socket.on("collision", (data) => console.log(data));
