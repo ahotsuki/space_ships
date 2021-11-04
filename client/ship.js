@@ -2,14 +2,20 @@ let SHIPS = [];
 
 function renderShips() {
   SHIPS.forEach((s) => {
-    renderShip(s[1].lines);
+    renderShip(s[1].lines, s[1].boost, s[1].lboost, s[1].rboost);
   });
 }
 
-function renderShip(lines) {
+function renderShip(lines, boost, lb, rb) {
   push();
   stroke(255);
   lines.forEach((l) => line(...l));
+  noStroke();
+  fill(0, 0, 255, 80);
+  boost.forEach((b) => ellipse(...b, 7, 7));
+  fill(255, 0, 0, 60);
+  lb.forEach((b) => ellipse(...b, 5, 5));
+  rb.forEach((b) => ellipse(...b, 5, 5));
   pop();
 }
 

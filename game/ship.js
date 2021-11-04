@@ -2,12 +2,10 @@ class Ship {
   #size = 0;
   #heading = 0;
   #points = [];
-  #lboost = [];
-  #rboost = [];
-  #boost = [];
   #velocity = [0, 0];
   #friction = 0.9;
   #GAME = 0;
+
   constructor(x, y, size, GAME, id) {
     this.x = x;
     this.y = y;
@@ -21,6 +19,9 @@ class Ship {
     this.#GAME = GAME;
     this.id = id;
     this.steering = 0;
+    this.lboost = [];
+    this.rboost = [];
+    this.boost = [];
 
     const ts = arrayMultiply(trianglePnt(Math.PI / 6), this.#size);
     this.#points.push([this.x + (this.#size * 2) / 5, this.y]);
@@ -34,9 +35,27 @@ class Ship {
   }
 
   update() {
-    if (this.steering < 0) this.rotccw();
-    else if (this.steering > 0) this.rotcw();
-    if (this.boosting) this.#velocity = this.forward();
+    if (this.steering < 0) {
+      this.rotccw();
+      this.rboost.push([...this.#points[2]]);
+      if (this.rboost.length > 2) this.rboost.shift();
+    } else {
+      this.rboost.shift();
+    }
+    if (this.steering > 0) {
+      this.rotcw();
+      this.lboost.push([...this.#points[1]]);
+      if (this.lboost.length > 2) this.lboost.shift();
+    } else {
+      this.lboost.shift();
+    }
+    if (this.boosting) {
+      this.#velocity = this.forward();
+      this.boost.push([...this.#points[5]]);
+      if (this.boost.length > 3) this.boost.shift();
+    } else {
+      this.boost.shift();
+    }
     const widthcheck =
       this.x + this.#velocity[0] > 0 + this.#size &&
       this.x + this.#velocity[0] < this.#GAME.WIDTH - this.#size;

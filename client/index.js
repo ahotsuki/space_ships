@@ -5,15 +5,14 @@ let cam;
 let _perspective = [];
 
 function setup() {
-  createCanvas(WIDTH, HEIGHT, WEBGL);
-  cam = createCamera();
+  createCanvas(WIDTH, HEIGHT);
 }
 
 let x = 0,
   y = 0;
 function draw() {
   background(0);
-  cam.lookAt(..._perspective, 0);
+  translate(WIDTH / 2 - _perspective[0], HEIGHT / 2 - _perspective[1]);
   push();
   strokeWeight(5);
   stroke(255, 0, 0);
