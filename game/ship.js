@@ -20,6 +20,7 @@ class Ship {
     this.boosting = false;
     this.#GAME = GAME;
     this.id = id;
+    this.steering = 0;
 
     const ts = arrayMultiply(trianglePnt(Math.PI / 6), this.#size);
     this.#points.push([this.x + (this.#size * 2) / 5, this.y]);
@@ -33,17 +34,24 @@ class Ship {
   }
 
   update() {
+    if (this.steering < 0) this.rotccw();
+    else if (this.steering > 0) this.rotcw();
     if (this.boosting) this.#velocity = this.forward();
-    this.x += this.#velocity[0];
-    this.y += this.#velocity[1];
-    this.#movePnts(this.#velocity);
+    const widthcheck =
+      this.x + this.#velocity[0] > 0 + this.#size &&
+      this.x + this.#velocity[0] < this.#GAME.WIDTH - this.#size;
+    const heightcheck =
+      this.y + this.#velocity[1] > 0 + this.#size &&
+      this.y + this.#velocity[1] < this.#GAME.HEIGHT - this.#size;
+    if (widthcheck) this.x += this.#velocity[0];
+    if (heightcheck) this.y += this.#velocity[1];
+    this.#movePnts(this.#velocity, widthcheck, heightcheck);
 
     this.#velocity = arrayMultiply(this.#velocity, this.#friction);
   }
 
   fire() {
-    this.#GAME.addBullet();
-    // return [this.#heading, this.#points[0]];
+    this.#GAME.addBullet(this.id, ...this.#points[0], 5, this.#heading);
   }
 
   forward() {
@@ -86,8 +94,12 @@ class Ship {
     this.lines.push([...p[3], ...p[4]]);
   }
 
-  #movePnts(data) {
-    this.#points = this.#points.map((p) => arraySum(p, data));
+  #movePnts(data, w, h) {
+    this.#points = this.#points.map((p) => {
+      if (w) p[0] += data[0];
+      if (h) p[1] += data[1];
+      return p;
+    });
     this.#updateLines();
   }
 }

@@ -1,5 +1,6 @@
 class Bullet {
-  constructor(id, x, y, speed, heading) {
+  #GAME;
+  constructor(id, x, y, speed, heading, GAME) {
     this.id = id;
     this.xi = x;
     this.yi = y;
@@ -8,16 +9,22 @@ class Bullet {
     this.xf = x;
     this.yf = y;
     this.vx = Math.cos(this.heading) * this.speed;
-    this.vy = Maath.sin(this.heading) * this.speed;
-    this.maxRange = 20;
+    this.vy = Math.sin(this.heading) * this.speed;
+    this.maxRange = 50;
     this.range = 0;
-    this.die = false;
+    this.#GAME = GAME;
   }
 
   update() {
     this.xf += this.vx;
     this.yf += this.vy;
     this.range++;
-    if (this.range >= this.maxRange) this.die = true;
+    if (this.range >= this.maxRange) this.die();
+  }
+
+  die() {
+    this.#GAME.deleteBullet(this);
   }
 }
+
+module.exports = Bullet;

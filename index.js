@@ -18,9 +18,11 @@ io.on("connection", (socket) => {
   Game.addAsteroid();
 
   socket.on("forward", () => (Game.getShip(socket.id).boosting = true));
-  socket.on("clockwise", () => Game.getShip(socket.id).rotcw());
-  socket.on("counter", () => Game.getShip(socket.id).rotccw());
+  socket.on("clockwise", () => (Game.getShip(socket.id).steering = 1));
+  socket.on("counter", () => (Game.getShip(socket.id).steering = -1));
   socket.on("release", () => Game.getShip(socket.id).release());
+  socket.on("releaseSteer", () => (Game.getShip(socket.id).steering = 0));
+  socket.on("fire", () => Game.getShip(socket.id).fire());
 
   socket.on("disconnect", () => {
     Game.deleteShip(socket.id);
@@ -28,8 +30,12 @@ io.on("connection", (socket) => {
 });
 
 function update() {
-  io.emit("update", { ships: Game.getShips(), asteroids: Game.getAsteroids() });
-  Game.updateShips();
+  io.emit("update", {
+    ships: Game.getShips(),
+    asteroids: Game.getAsteroids(),
+    bullets: Game.getBullets(),
+  });
+  Game.update();
   // Game.getShips().forEach((s) => {
   //   io.to(s[0]).emit("collision", { message: Game.checkShipCollision(...s) });
   // });

@@ -7,8 +7,10 @@ function renderShips() {
 }
 
 function renderShip(lines) {
+  push();
   stroke(255);
   lines.forEach((l) => line(...l));
+  pop();
 }
 
 document.addEventListener("keydown", (e) => {
@@ -20,4 +22,6 @@ document.addEventListener("keydown", (e) => {
 
 document.addEventListener("keyup", (e) => {
   if (e.keyCode === 38) socket.emit("release");
+  if (e.keyCode === 39) socket.emit("releaseSteer");
+  if (e.keyCode === 37) socket.emit("releaseSteer");
 });
