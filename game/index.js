@@ -55,8 +55,8 @@ function updateAsteroids() {
   ASTEROIDS.forEach((a) => a.update());
 }
 
-function addBullet(id, x, y, speed, heading) {
-  BULLETS.push(new Bullet(id, x, y, speed, heading, this));
+function addBullet(id, x, y, speed, mrange, heading) {
+  BULLETS.push(new Bullet(id, x, y, speed, mrange, heading, this));
 }
 
 function getBullets() {
@@ -92,6 +92,51 @@ function checkCollision() {
           a.die();
           b.die();
         }
+      }
+    });
+  });
+
+  SHIPS.forEach((s) => {
+    ASTEROIDS.forEach((a) => {
+      if (
+        a.x > s.x - 100 &&
+        a.x < s.x + 100 &&
+        a.y > s.y - 100 &&
+        a.y < s.y + 100
+      ) {
+        a.color = [0, 0, 255];
+        Collision.ship_asteroid(s, a);
+      }
+    });
+  });
+
+  SHIPS.forEach((s1) => {
+    SHIPS.forEach((s2) => {
+      if (s1 !== s2) {
+        if (
+          s2.x > s1.x - 100 &&
+          s2.x < s1.x + 100 &&
+          s2.y > s1.y - 100 &&
+          s2.y < s1.y + 100
+        ) {
+          s2.color = [0, 0, 255];
+          Collision.ship_ship(s1, s2);
+        }
+      }
+    });
+  });
+
+  BULLETS.forEach((b) => {
+    SHIPS.forEach((s) => {
+      if (s.id === b.id) return;
+      if (
+        s.x > b.xf - 100 &&
+        s.x < b.xf + 100 &&
+        s.y > b.yf - 100 &&
+        s.y < b.yf + 100
+      ) {
+        s.color = [255, 0, 0];
+        Collision.bullet_ship(b, s);
       }
     });
   });

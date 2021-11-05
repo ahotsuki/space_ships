@@ -2,13 +2,13 @@ let SHIPS = [];
 
 function renderShips() {
   SHIPS.forEach((s) => {
-    renderShip(s[1].lines, s[1].boost, s[1].lboost, s[1].rboost);
+    renderShip(s[1].color, s[1].lines, s[1].boost, s[1].lboost, s[1].rboost);
   });
 }
 
-function renderShip(lines, boost, lb, rb) {
+function renderShip(color, lines, boost, lb, rb) {
   push();
-  stroke(255);
+  stroke(color);
   lines.forEach((l) => line(...l));
   noStroke();
   fill(0, 0, 255, 95);
@@ -28,6 +28,7 @@ document.addEventListener("keydown", (e) => {
 
 document.addEventListener("keyup", (e) => {
   if (e.keyCode === 38) socket.emit("release");
+  if (e.keyCode === 32) socket.emit("releaseFire");
   if (e.keyCode === 39) socket.emit("releaseSteer");
   if (e.keyCode === 37) socket.emit("releaseSteer");
 });

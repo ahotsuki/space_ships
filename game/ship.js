@@ -22,6 +22,12 @@ class Ship {
     this.lboost = [];
     this.rboost = [];
     this.boost = [];
+    this.fireRate = 1;
+    this.bulletRange = 100;
+    this.bulletSpeed = 6;
+    this.load = 0;
+    this.firing = false;
+    this.color = [255, 255, 255];
 
     const ts = arrayMultiply(trianglePnt(Math.PI / 6), this.#size);
     this.#points.push([this.x + (this.#size * 2) / 5, this.y]);
@@ -35,27 +41,32 @@ class Ship {
   }
 
   update() {
+    this.color = [255, 255, 255];
+    this.load++;
     if (this.steering < 0) {
-      this.rotccw();
+      this.#rotccw();
       this.rboost.push([...this.#points[2]]);
       if (this.rboost.length > 2) this.rboost.shift();
     } else {
       this.rboost.shift();
     }
     if (this.steering > 0) {
-      this.rotcw();
+      this.#rotcw();
       this.lboost.push([...this.#points[1]]);
       if (this.lboost.length > 2) this.lboost.shift();
     } else {
       this.lboost.shift();
     }
     if (this.boosting) {
-      this.#velocity = this.forward();
+      this.#velocity = this.#forward();
       this.boost.push([...this.#points[5]]);
       if (this.boost.length > 3) this.boost.shift();
     } else {
       this.boost.shift();
     }
+
+    if (this.firing) this.#fire();
+
     const widthcheck =
       this.x + this.#velocity[0] > 0 + this.#size &&
       this.x + this.#velocity[0] < this.#GAME.WIDTH - this.#size;
@@ -69,16 +80,25 @@ class Ship {
     this.#velocity = arrayMultiply(this.#velocity, this.#friction);
   }
 
-  fire() {
-    this.#GAME.addBullet(this.id, ...this.#points[0], 5, this.#heading);
+  #fire() {
+    if (this.load >= this.#GAME.FPS / this.fireRate) {
+      this.#GAME.addBullet(
+        this.id,
+        ...this.#points[0],
+        this.bulletSpeed,
+        this.bulletRange,
+        this.#heading
+      );
+      this.load = 0;
+    }
   }
 
-  forward() {
+  #forward() {
     let d = arrayMultiply(trianglePnt(this.#heading), this.topSpeed);
     return d;
   }
 
-  rotcw() {
+  #rotcw() {
     this.#heading += this.rotSpeed;
     this.#points = this.#points.map((p) =>
       rotatePnt(this.x, this.y, p[0], p[1], this.rotSpeed)
@@ -86,7 +106,7 @@ class Ship {
     this.#updateLines();
   }
 
-  rotccw() {
+  #rotccw() {
     this.#heading -= this.rotSpeed;
     this.#points = this.#points.map((p) =>
       rotatePnt(this.x, this.y, p[0], p[1], -this.rotSpeed)

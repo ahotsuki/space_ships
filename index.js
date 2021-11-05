@@ -28,7 +28,8 @@ io.on("connection", (socket) => {
   socket.on("counter", () => (Game.getShip(socket.id).steering = -1));
   socket.on("release", () => Game.getShip(socket.id).release());
   socket.on("releaseSteer", () => (Game.getShip(socket.id).steering = 0));
-  socket.on("fire", () => Game.getShip(socket.id).fire());
+  socket.on("fire", () => (Game.getShip(socket.id).firing = true));
+  socket.on("releaseFire", () => (Game.getShip(socket.id).firing = false));
 
   socket.on("disconnect", () => {
     Game.deleteShip(socket.id);
