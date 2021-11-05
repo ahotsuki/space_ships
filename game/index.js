@@ -43,7 +43,7 @@ function updateShips() {
 // }
 
 function addAsteroid() {
-  ASTEROIDS = [];
+  // ASTEROIDS = [];
   ASTEROIDS.push(new Asteroid(200, 200, 3, this));
 }
 

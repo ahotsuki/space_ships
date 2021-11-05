@@ -32,7 +32,14 @@ class Asteroid {
   }
 
   die() {
-    if (this.lvl > 1) this.#GAME.birthAsteroid(this.x, this.y, this.lvl - 1);
+    if (this.lvl > 1) {
+      this.#GAME.birthAsteroid(this.x, this.y, this.lvl - 1);
+      this.#GAME.birthAsteroid(this.x, this.y, this.lvl - 1);
+    }
+    if (this.lvl > 2) {
+      this.#GAME.birthAsteroid(this.x, this.y, this.lvl - 1);
+      this.#GAME.birthAsteroid(this.x, this.y, this.lvl - 1);
+    }
     this.#GAME.deleteAsteroid(this);
   }
 

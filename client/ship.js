@@ -11,9 +11,9 @@ function renderShip(lines, boost, lb, rb) {
   stroke(255);
   lines.forEach((l) => line(...l));
   noStroke();
-  fill(0, 0, 255, 80);
+  fill(0, 0, 255, 95);
   boost.forEach((b) => ellipse(...b, 7, 7));
-  fill(255, 0, 0, 60);
+  fill(255, 0, 0, 95);
   lb.forEach((b) => ellipse(...b, 5, 5));
   rb.forEach((b) => ellipse(...b, 5, 5));
   pop();

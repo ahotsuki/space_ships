@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   console.log("Client connected.");
   Game.addShip(socket.id);
-  Game.addAsteroid();
+  for (let i = 0; i < 20; i++) Game.addAsteroid();
 
   socket.on("forward", () => (Game.getShip(socket.id).boosting = true));
   socket.on("clockwise", () => (Game.getShip(socket.id).steering = 1));
