@@ -1,5 +1,5 @@
-const WIDTH = 1080,
-  HEIGHT = 720;
+let WIDTH, HEIGHT, FPS, GAME;
+let new_spawn = 0;
 
 const Ship = require("./ship");
 const SHIPS = new Map();
@@ -32,19 +32,10 @@ function updateShips() {
   SHIPS.forEach((s) => s.update());
 }
 
-// function checkShipCollision(id, ship) {
-//   let a = false;
-//   SHIPS.forEach((s, k) => {
-//     if (k !== id) {
-//       if (Math.abs(s.x - ship.x) < 50) a = true;
-//     }
-//   });
-//   return a;
-// }
-
 function addAsteroid() {
-  // ASTEROIDS = [];
-  ASTEROIDS.push(new Asteroid(200, 200, 3, this));
+  let w = this.WIDTH / 2;
+  let h = this.HEIGHT / 2;
+  ASTEROIDS.push(new Asteroid(w, h, 3, this));
 }
 
 function birthAsteroid(x, y, lvl) {
@@ -84,10 +75,23 @@ function deleteBullet(bullet) {
 function checkCollision() {
   BULLETS.forEach((b) => {
     ASTEROIDS.forEach((a) => {
-      if (Collision.bullet_asteroid(b, a)) {
-        // a.color = [255, 0, 0];
-        a.die();
-        b.die();
+      if (
+        a.x > b.xf - 100 &&
+        a.x < b.xf + 100 &&
+        a.y > b.yf - 100 &&
+        a.y < b.yf + 100
+      ) {
+        a.color = [255, 0, 0];
+        if (Collision.bullet_asteroid(b, a)) {
+          // a.color = [255, 0, 0];
+          if (a.lvl === 1) new_spawn++;
+          if (new_spawn >= 8) {
+            a.rebirth();
+            new_spawn -= 8;
+          }
+          a.die();
+          b.die();
+        }
       }
     });
   });
@@ -103,6 +107,7 @@ function update() {
 module.exports = {
   WIDTH,
   HEIGHT,
+  FPS,
   update,
   addShip,
   getShips,

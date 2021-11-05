@@ -11,7 +11,7 @@ class Asteroid {
     this.color = [255, 255, 255];
     this.#GAME = GAME;
     this.heading = (Math.floor(Math.random() * 360) * Math.PI) / 180;
-    this.speed = 5;
+    this.speed = Math.floor(Math.random() * 6);
     this.vx = Math.cos(this.heading) * this.speed;
     this.vy = Math.sin(this.heading) * this.speed;
 
@@ -21,6 +21,7 @@ class Asteroid {
   }
 
   update() {
+    this.color = [255, 255, 255];
     if (this.x < this.#size || this.x > this.#GAME.WIDTH - this.#size)
       this.vx *= -1;
     if (this.y < this.#size || this.y > this.#GAME.HEIGHT - this.#size)
@@ -41,6 +42,10 @@ class Asteroid {
       this.#GAME.birthAsteroid(this.x, this.y, this.lvl - 1);
     }
     this.#GAME.deleteAsteroid(this);
+  }
+
+  rebirth() {
+    this.#GAME.addAsteroid();
   }
 
   #determineSize(lvl) {

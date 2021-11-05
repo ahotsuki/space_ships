@@ -4,7 +4,13 @@ const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const Game = require("./game/index");
-const FPS = 1000 / 30;
+Game.WIDTH = 1080;
+Game.HEIGHT = 720;
+Game.FPS = 30;
+Game.GAME = Game;
+for (let i = 0; i < 2; i++) Game.addAsteroid();
+
+const FPS = 1000 / Game.FPS;
 
 app.use(express.static(path.join(__dirname, "client")));
 
@@ -14,8 +20,8 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("Client connected.");
+  socket.emit("setup", { width: Game.WIDTH, height: Game.HEIGHT });
   Game.addShip(socket.id);
-  for (let i = 0; i < 20; i++) Game.addAsteroid();
 
   socket.on("forward", () => (Game.getShip(socket.id).boosting = true));
   socket.on("clockwise", () => (Game.getShip(socket.id).steering = 1));

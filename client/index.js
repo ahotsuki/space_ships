@@ -1,8 +1,22 @@
 const socket = io();
-const WIDTH = 1080;
-const HEIGHT = 720;
+const WIDTH =
+  Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0) -
+  4;
+const HEIGHT =
+  Math.max(
+    document.documentElement.clientHeight || 0,
+    window.innerHeight || 0
+  ) - 4;
+let game_width;
+let game_height;
 let cam;
 let _perspective = [];
+
+socket.on("setup", (data) => {
+  game_width = data.width;
+  game_height = data.height;
+  setup();
+});
 
 function setup() {
   createCanvas(WIDTH, HEIGHT);
@@ -16,10 +30,10 @@ function draw() {
   push();
   strokeWeight(5);
   stroke(255, 0, 0);
-  line(0, 0, WIDTH, 0);
-  line(0, 0, 0, HEIGHT);
-  line(WIDTH, 0, WIDTH, HEIGHT);
-  line(0, HEIGHT, WIDTH, HEIGHT);
+  line(0, 0, game_width, 0);
+  line(0, 0, 0, game_height);
+  line(game_width, 0, game_width, game_height);
+  line(0, game_height, game_width, game_height);
   pop();
   renderShips();
   renderAsteroids();
