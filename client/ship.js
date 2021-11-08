@@ -1,4 +1,5 @@
 let SHIPS = [];
+let my_ship = false;
 
 function renderShips() {
   SHIPS.forEach((s) => {
@@ -16,6 +17,18 @@ function renderShip(color, lines, boost, lb, rb) {
   fill(255, 0, 0, 95);
   lb.forEach((b) => ellipse(...b, 5, 5));
   rb.forEach((b) => ellipse(...b, 5, 5));
+  pop();
+}
+
+function renderDetails() {
+  push();
+  stroke(255);
+  fill(0, 255, 0);
+  textSize(18);
+  let x = WIDTH / 2 - 20;
+  let y = 40;
+  text(`${my_ship.score.username}`, x, y);
+  text(`SCORE: ${my_ship.score.value}`, x, y + 25);
   pop();
 }
 

@@ -14,6 +14,7 @@ class Game {
     this.SHIPS = new Map();
     this.ASTEROIDS = [];
     this.BULLETS = [];
+    this.ALLTIMERANK = [];
     this.RANKS = new Map();
   }
 
@@ -78,7 +79,7 @@ class Game {
   }
 
   gameOver(ship) {
-    this.io.to(ship.id).emit("gameover", { score: ship.score });
+    this.io.to(ship.id).emit("gameover", { score: ship.score.get() });
   }
 
   checkCollision() {
@@ -96,7 +97,7 @@ class Game {
               this.addAsteroid();
               this.#new_spawn -= 8;
             }
-            this.getShip(b.id).score++;
+            this.getShip(b.id).score.plus();
             a.die();
             b.die();
           }
@@ -118,7 +119,7 @@ class Game {
               this.addAsteroid();
               this.#new_spawn -= 8;
             }
-            s.score++;
+            s.score.plus();
             a.die();
             this.gameOver(s);
           }
@@ -136,8 +137,8 @@ class Game {
             s2.y < s1.y + 100
           ) {
             if (Collision.ship_ship(s1, s2)) {
-              s1.score++;
-              s2.score++;
+              s1.score.plus();
+              s2.score.plus();
               this.gameOver(s1);
               this.gameOver(s2);
             }
@@ -157,7 +158,7 @@ class Game {
         ) {
           s.color = [255, 0, 0];
           if (Collision.bullet_ship(b, s)) {
-            this.getShip(b.id).score++;
+            this.getShip(b.id).score.plus();
             this.gameOver(s);
           }
         }

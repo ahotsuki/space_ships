@@ -15,6 +15,14 @@
     }
   </style>
   <body>
+    <script>
+      if (
+        !window.sessionStorage.getItem("username") ||
+        window.sessionStorage.getItem("username").valueOf() === "null"
+      ) {
+        window.location = "/";
+      }
+    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="ship.js"></script>
     <script src="asteroid.js"></script>

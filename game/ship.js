@@ -1,3 +1,20 @@
+class Score {
+  value = 0;
+  rank = 0;
+  username = "";
+
+  constructor(id) {
+    this.id = id;
+  }
+
+  plus(v = 1) {
+    this.value += v;
+  }
+  get() {
+    return this.value;
+  }
+}
+
 class Ship {
   #size = 0;
   #heading = 0;
@@ -28,7 +45,7 @@ class Ship {
     this.load = 0;
     this.firing = false;
     this.color = [255, 255, 255];
-    this.score = 0;
+    this.score = new Score(id);
 
     const ts = arrayMultiply(trianglePnt(Math.PI / 6), this.#size);
     this.#points.push([this.x + (this.#size * 2) / 5, this.y]);
@@ -39,6 +56,10 @@ class Ship {
     this.#points.push([this.#points[1][0], this.#points[0][1]]);
 
     this.#updateLines();
+  }
+
+  setUsername(uname) {
+    this.score.username = uname;
   }
 
   update() {

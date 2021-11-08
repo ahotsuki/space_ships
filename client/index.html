@@ -10,15 +10,37 @@
     <h1>Space Ships</h1>
     <input type="text" name="" id="username" />
     <button id="join">Join</button>
+    <h2>Ranking</h2>
+    <ul id="list"></ul>
+    <h2>All Time</h2>
+    <ul id="all"></ul>
   </body>
 
   <script>
     const uname = document.getElementById("username");
     const btn = document.getElementById("join");
+    const list = document.getElementById("list");
+    const all = document.getElementById("all");
 
     btn.onclick = () => {
       window.sessionStorage.setItem("username", uname.value);
       window.location = "/game";
     };
+
+    setInterval(() => {
+      fetch("/score")
+        .then((data) => data.json())
+        .then(({ ranks, alltime }) => {
+          ranks.sort((a, b) => a[1] - b[1]);
+          list.innerHTML = "";
+          ranks.forEach(
+            (e) => (list.innerHTML += `<li>${e[1]}. ${e[0]}: ${e[2]}</li>`)
+          );
+          all.innerHTML = "";
+          alltime.forEach(
+            (e, i) => (all.innerHTML += `<li>${i + 1}. ${e[0]}: ${e[1]}</li>`)
+          );
+        });
+    }, 200);
   </script>
 </html>

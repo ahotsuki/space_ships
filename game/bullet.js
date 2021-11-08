@@ -11,18 +11,17 @@ class Bullet {
     this.vx = Math.cos(this.heading) * this.speed;
     this.vy = Math.sin(this.heading) * this.speed;
     this.maxRange = mrange;
-    this.maxrx = Math.abs(Math.cos(this.heading) * this.maxRange);
-    this.maxry = Math.abs(Math.sin(this.heading) * this.maxRange);
     this.#GAME = GAME;
+  }
+
+  #distance(a, b, x, y) {
+    return Math.sqrt(Math.pow(a - x, 2) + Math.pow(b - y, 2));
   }
 
   update() {
     this.xf += this.vx;
     this.yf += this.vy;
-    if (
-      Math.abs(this.xf - this.xi) >= this.maxrx ||
-      Math.abs(this.yf - this.yi) >= this.maxry
-    )
+    if (this.#distance(this.xi, this.yi, this.xf, this.yf) >= this.maxRange)
       this.die();
   }
 

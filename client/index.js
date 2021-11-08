@@ -12,6 +12,23 @@ let game_height;
 let cam;
 let _perspective = [];
 
+let RANK = [];
+function rankRender() {
+  push();
+  stroke(255);
+  fill(255);
+  textSize(18);
+  let x = WIDTH - 80;
+  let y = 40;
+  RANK.sort((a, b) => b[1] - a[1]);
+  if (RANK.length > 0)
+    RANK.forEach((e) => {
+      text(`${e[0]}, ${e[1]}`, x, y);
+      y += 25;
+    });
+  pop();
+}
+
 socket.on("setup", (data) => {
   game_width = data.width;
   game_height = data.height;
@@ -28,6 +45,8 @@ let x = 0,
   y = 0;
 function draw() {
   background(0);
+  rankRender();
+  if (my_ship) renderDetails();
   translate(WIDTH / 2 - _perspective[0], HEIGHT / 2 - _perspective[1]);
   push();
   strokeWeight(5);
@@ -47,7 +66,9 @@ socket.on("update", (data) => {
   ASTEROIDS = data.asteroids;
   BULLETS = data.bullets;
   let ps = SHIPS.filter((s) => s[0] === socket.id);
-  _perspective = [ps[0][1].x, ps[0][1].y];
+  my_ship = ps[0][1];
+  _perspective = [my_ship.x, my_ship.y];
+  RANK = data.rank;
 });
 
 socket.on("gameover", ({ score }) => {
