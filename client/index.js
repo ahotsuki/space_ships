@@ -18,6 +18,8 @@ socket.on("setup", (data) => {
   setup();
 });
 
+socket.emit("username", { uname: window.sessionStorage.getItem("username") });
+
 function setup() {
   createCanvas(WIDTH, HEIGHT);
 }
@@ -48,4 +50,7 @@ socket.on("update", (data) => {
   _perspective = [ps[0][1].x, ps[0][1].y];
 });
 
-socket.on("collision", (data) => console.log(data));
+socket.on("gameover", ({ score }) => {
+  window.sessionStorage.setItem("score", score);
+  window.location = "gameover.html";
+});

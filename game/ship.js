@@ -28,6 +28,7 @@ class Ship {
     this.load = 0;
     this.firing = false;
     this.color = [255, 255, 255];
+    this.score = 0;
 
     const ts = arrayMultiply(trianglePnt(Math.PI / 6), this.#size);
     this.#points.push([this.x + (this.#size * 2) / 5, this.y]);

@@ -13,15 +13,17 @@ function bullet_asteroid(bullet, asteroid) {
 }
 
 function ship_asteroid(ship, asteroid) {
+  let collided = false;
   asteroid.lines.forEach((a) => {
     ship.lines.forEach((s) => {
-      if (lineIntersection(...a, [s[0], s[1]], [s[2], s[3]]))
-        asteroid.color = [255, 0, 0];
+      if (lineIntersection(...a, [s[0], s[1]], [s[2], s[3]])) collided = true;
     });
   });
+  return collided;
 }
 
 function ship_ship(ship1, ship2) {
+  let collided = false;
   ship1.lines.forEach((s1) => {
     ship2.lines.forEach((s2) => {
       if (
@@ -32,14 +34,15 @@ function ship_ship(ship1, ship2) {
           [s2[2], s2[3]]
         )
       ) {
-        ship2.color = [255, 0, 0];
+        collided = true;
       }
     });
   });
+  return collided;
 }
 
 function bullet_ship(bullet, ship) {
-  // let collided = false;
+  let collided = false;
   let col = 0;
   ship.lines.forEach((l) => {
     if (
@@ -53,7 +56,8 @@ function bullet_ship(bullet, ship) {
       col++;
     }
   });
-  if (col === 1) ship.color = [0, 255, 0];
+  if (col === 1) collided = true;
+  return collided;
 }
 
 function lineIntersection(a, b, c, d) {

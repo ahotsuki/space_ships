@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Space Ships</title>
+  </head>
+  <body>
+    <h1>Game Over</h1>
+    <h3>Your total score is: <span id="score"></span></h3>
+    <h4>Better luck next time! :)</h4>
+  </body>
+
+  <script>
+    document.getElementById("score").innerText =
+      window.sessionStorage.getItem("score");
+  </script>
+</html>

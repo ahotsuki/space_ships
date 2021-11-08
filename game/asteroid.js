@@ -44,10 +44,6 @@ class Asteroid {
     this.#GAME.deleteAsteroid(this);
   }
 
-  rebirth() {
-    this.#GAME.addAsteroid();
-  }
-
   #determineSize(lvl) {
     if (lvl === 1) return 20;
     if (lvl === 2) return 40;

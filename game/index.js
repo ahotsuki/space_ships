@@ -1,168 +1,176 @@
-let WIDTH, HEIGHT, FPS, GAME;
-let new_spawn = 0;
-
 const Ship = require("./ship");
-const SHIPS = new Map();
-
 const Asteroid = require("./asteroid");
-let ASTEROIDS = [];
-
 const Bullet = require("./bullet");
-let BULLETS = [];
-
 const Collision = require("./collision");
 
-function addShip(id) {
-  SHIPS.set(id, new Ship(100, 100, 30, this, id));
-}
+class Game {
+  #new_spawn = 0;
 
-function getShips() {
-  return [...SHIPS];
-}
+  constructor(WIDTH, HEIGHT, FPS, io) {
+    this.WIDTH = WIDTH;
+    this.HEIGHT = HEIGHT;
+    this.FPS = FPS;
+    this.io = io;
+    this.SHIPS = new Map();
+    this.ASTEROIDS = [];
+    this.BULLETS = [];
+    this.RANKS = new Map();
+  }
 
-function getShip(id) {
-  return SHIPS.get(id);
-}
+  addShip(id) {
+    this.SHIPS.set(id, new Ship(100, 100, 30, this, id));
+  }
 
-function deleteShip(id) {
-  SHIPS.delete(id);
-}
+  getShips() {
+    return [...this.SHIPS];
+  }
 
-function updateShips() {
-  SHIPS.forEach((s) => s.update());
-}
+  getShip(id) {
+    return this.SHIPS.get(id);
+  }
 
-function addAsteroid() {
-  let w = this.WIDTH / 2;
-  let h = this.HEIGHT / 2;
-  ASTEROIDS.push(new Asteroid(w, h, 3, this));
-}
+  deleteShip(id) {
+    this.SHIPS.delete(id);
+  }
 
-function birthAsteroid(x, y, lvl) {
-  ASTEROIDS.push(new Asteroid(x, y, lvl, this));
-}
+  updateShips() {
+    this.SHIPS.forEach((s) => s.update());
+  }
 
-function getAsteroids() {
-  return ASTEROIDS;
-}
+  addAsteroid() {
+    let w = this.WIDTH / 2;
+    let h = this.HEIGHT / 2;
+    this.ASTEROIDS.push(new Asteroid(w, h, 3, this));
+  }
 
-function deleteAsteroid(asteroid) {
-  const index = ASTEROIDS.indexOf(asteroid);
-  ASTEROIDS.splice(index, 1);
-}
+  birthAsteroid(x, y, lvl) {
+    this.ASTEROIDS.push(new Asteroid(x, y, lvl, this));
+  }
 
-function updateAsteroids() {
-  ASTEROIDS.forEach((a) => a.update());
-}
+  getAsteroids() {
+    return this.ASTEROIDS;
+  }
 
-function addBullet(id, x, y, speed, mrange, heading) {
-  BULLETS.push(new Bullet(id, x, y, speed, mrange, heading, this));
-}
+  deleteAsteroid(asteroid) {
+    const index = this.ASTEROIDS.indexOf(asteroid);
+    this.ASTEROIDS.splice(index, 1);
+  }
 
-function getBullets() {
-  return BULLETS;
-}
+  updateAsteroids() {
+    this.ASTEROIDS.forEach((a) => a.update());
+  }
 
-function updateBullets() {
-  BULLETS.forEach((b) => b.update());
-}
+  addBullet(id, x, y, speed, mrange, heading) {
+    this.BULLETS.push(new Bullet(id, x, y, speed, mrange, heading, this));
+  }
 
-function deleteBullet(bullet) {
-  const index = BULLETS.indexOf(bullet);
-  BULLETS.splice(index, 1);
-}
+  getBullets() {
+    return this.BULLETS;
+  }
 
-function checkCollision() {
-  BULLETS.forEach((b) => {
-    ASTEROIDS.forEach((a) => {
-      if (
-        a.x > b.xf - 100 &&
-        a.x < b.xf + 100 &&
-        a.y > b.yf - 100 &&
-        a.y < b.yf + 100
-      ) {
-        a.color = [255, 0, 0];
-        if (Collision.bullet_asteroid(b, a)) {
-          // a.color = [255, 0, 0];
-          if (a.lvl === 1) new_spawn++;
-          if (new_spawn >= 8) {
-            a.rebirth();
-            new_spawn -= 8;
-          }
-          a.die();
-          b.die();
-        }
-      }
-    });
-  });
+  updateBullets() {
+    this.BULLETS.forEach((b) => b.update());
+  }
 
-  SHIPS.forEach((s) => {
-    ASTEROIDS.forEach((a) => {
-      if (
-        a.x > s.x - 100 &&
-        a.x < s.x + 100 &&
-        a.y > s.y - 100 &&
-        a.y < s.y + 100
-      ) {
-        a.color = [0, 0, 255];
-        Collision.ship_asteroid(s, a);
-      }
-    });
-  });
+  deleteBullet(bullet) {
+    const index = this.BULLETS.indexOf(bullet);
+    this.BULLETS.splice(index, 1);
+  }
 
-  SHIPS.forEach((s1) => {
-    SHIPS.forEach((s2) => {
-      if (s1 !== s2) {
+  gameOver(ship) {
+    this.io.to(ship.id).emit("gameover", { score: ship.score });
+  }
+
+  checkCollision() {
+    this.BULLETS.forEach((b) => {
+      this.ASTEROIDS.forEach((a) => {
         if (
-          s2.x > s1.x - 100 &&
-          s2.x < s1.x + 100 &&
-          s2.y > s1.y - 100 &&
-          s2.y < s1.y + 100
+          a.x > b.xf - 100 &&
+          a.x < b.xf + 100 &&
+          a.y > b.yf - 100 &&
+          a.y < b.yf + 100
         ) {
-          s2.color = [0, 0, 255];
-          Collision.ship_ship(s1, s2);
+          if (Collision.bullet_asteroid(b, a)) {
+            if (a.lvl === 1) this.#new_spawn++;
+            if (this.#new_spawn >= 8) {
+              this.addAsteroid();
+              this.#new_spawn -= 8;
+            }
+            this.getShip(b.id).score++;
+            a.die();
+            b.die();
+          }
         }
-      }
+      });
     });
-  });
 
-  BULLETS.forEach((b) => {
-    SHIPS.forEach((s) => {
-      if (s.id === b.id) return;
-      if (
-        s.x > b.xf - 100 &&
-        s.x < b.xf + 100 &&
-        s.y > b.yf - 100 &&
-        s.y < b.yf + 100
-      ) {
-        s.color = [255, 0, 0];
-        Collision.bullet_ship(b, s);
-      }
+    this.SHIPS.forEach((s) => {
+      this.ASTEROIDS.forEach((a) => {
+        if (
+          a.x > s.x - 100 &&
+          a.x < s.x + 100 &&
+          a.y > s.y - 100 &&
+          a.y < s.y + 100
+        ) {
+          if (Collision.ship_asteroid(s, a)) {
+            if (a.lvl === 1) this.#new_spawn++;
+            if (this.#new_spawn >= 8) {
+              this.addAsteroid();
+              this.#new_spawn -= 8;
+            }
+            s.score++;
+            a.die();
+            this.gameOver(s);
+          }
+        }
+      });
     });
-  });
+
+    this.SHIPS.forEach((s1) => {
+      this.SHIPS.forEach((s2) => {
+        if (s1 !== s2) {
+          if (
+            s2.x > s1.x - 100 &&
+            s2.x < s1.x + 100 &&
+            s2.y > s1.y - 100 &&
+            s2.y < s1.y + 100
+          ) {
+            if (Collision.ship_ship(s1, s2)) {
+              s1.score++;
+              s2.score++;
+              this.gameOver(s1);
+              this.gameOver(s2);
+            }
+          }
+        }
+      });
+    });
+
+    this.BULLETS.forEach((b) => {
+      this.SHIPS.forEach((s) => {
+        if (s.id === b.id) return;
+        if (
+          s.x > b.xf - 100 &&
+          s.x < b.xf + 100 &&
+          s.y > b.yf - 100 &&
+          s.y < b.yf + 100
+        ) {
+          s.color = [255, 0, 0];
+          if (Collision.bullet_ship(b, s)) {
+            this.getShip(b.id).score++;
+            this.gameOver(s);
+          }
+        }
+      });
+    });
+  }
+
+  update() {
+    this.updateShips();
+    this.updateBullets();
+    this.updateAsteroids();
+    this.checkCollision();
+  }
 }
 
-function update() {
-  updateShips();
-  updateBullets();
-  updateAsteroids();
-  checkCollision();
-}
-
-module.exports = {
-  WIDTH,
-  HEIGHT,
-  FPS,
-  update,
-  addShip,
-  getShips,
-  deleteShip,
-  getShip,
-  addAsteroid,
-  birthAsteroid,
-  getAsteroids,
-  deleteAsteroid,
-  addBullet,
-  getBullets,
-  deleteBullet,
-};
+module.exports = Game;
