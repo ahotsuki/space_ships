@@ -6,19 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Space Ships</title>
   </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: black;
+      color: white;
+      min-height: 100vh;
+    }
+    .container {
+      padding: 2em;
+      border: 5px solid red;
+    }
+    #score {
+      color: red;
+    }
+  </style>
   <body>
-    <h1>Game Over</h1>
-    <h3>Your total score is: <span id="score"></span></h3>
-    <h4>Better luck next time! :)</h4>
-
-    <h2>Ranking</h2>
-    <ul id="list"></ul>
+    <div class="container">
+      <h1>Game Over</h1>
+      <br />
+      <h3>Your total score is: <span id="score"></span></h3>
+      <h4>Better luck next time! :)</h4>
+      <br />
+      <button onclick="home()">Play again?</button>
+    </div>
+    <br />
     <h2>All Time</h2>
     <ul id="all"></ul>
+    <br />
+    <h2>Ranking</h2>
+    <ul id="list"></ul>
   </body>
 
   <script>
     if (!window.sessionStorage.getItem("score")) {
+      window.location = "/";
+    }
+    function home() {
       window.location = "/";
     }
   </script>

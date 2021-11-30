@@ -6,14 +6,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Space Ships</title>
   </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: black;
+      color: white;
+      min-height: 100vh;
+    }
+    .instructions {
+      padding: 1em;
+      border: 1px solid white;
+    }
+    #username {
+      margin: 1em;
+    }
+    button {
+      margin: 1em;
+      padding: 0.5em;
+    }
+  </style>
   <body>
-    <h1>Space Ships</h1>
+    <img src="logo.jpg" alt="Space Ships Logo" />
+    <div class="instructions">
+      <h3>INSTRUCTIONS</h3>
+      <p>up arrow - boost</p>
+      <p>left/right arrow - rotate</p>
+      <p>space - shoot</p>
+    </div>
     <input type="text" name="" id="username" />
     <button id="join">Join</button>
-    <h2>Ranking</h2>
-    <ul id="list"></ul>
     <h2>All Time</h2>
     <ul id="all"></ul>
+    <br />
+    <h2>Ranking</h2>
+    <ul id="list"></ul>
   </body>
 
   <script>
@@ -23,6 +58,7 @@
     const all = document.getElementById("all");
 
     btn.onclick = () => {
+      if (uname.value === "") return alert("Username required");
       window.sessionStorage.setItem("username", uname.value);
       window.location = "/game";
     };
