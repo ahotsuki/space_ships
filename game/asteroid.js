@@ -11,7 +11,8 @@ class Asteroid {
     this.color = [255, 255, 255];
     this.#GAME = GAME;
     this.heading = (Math.floor(Math.random() * 360) * Math.PI) / 180;
-    this.speed = Math.floor(Math.random() * 6);
+    // this.speed = Math.floor(Math.random() * 6);
+    this.speed = 0;
     this.vx = Math.cos(this.heading) * this.speed;
     this.vy = Math.sin(this.heading) * this.speed;
 

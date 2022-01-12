@@ -1,22 +1,27 @@
+// external module requires
 const path = require("path");
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
+
+// game module setup
 const GameClass = require("./game/index");
 const GAME = new GameClass(1080, 720, 30, io);
-
-const RankClass = require("./game/rank");
-const Game = require("./game/index");
-const RANK = new RankClass();
-
-for (let i = 0; i < 2; i++) GAME.addAsteroid();
-
+for (let i = 0; i < 1; i++) GAME.addAsteroid();
 const FPS = 1000 / GAME.FPS;
 
+// rank module setup
+const RankClass = require("./game/rank");
+const RANK = new RankClass();
+
+// express middlewares setup
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "client")));
 
+//////////////////////////////////////////////////////////////////
+// express routes
+//////////////////////////////////////////////////////////////////
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "index.html"));
 });
@@ -29,6 +34,9 @@ app.get("/score", (req, res) => {
   res.send({ ranks: RANK.getRankings(), alltime: RANK.getAlltime() });
 });
 
+//////////////////////////////////////////////////////////////////
+// socket connection
+//////////////////////////////////////////////////////////////////
 io.on("connection", (socket) => {
   console.log("Client connected.");
   socket.emit("setup", { width: GAME.WIDTH, height: GAME.HEIGHT });
@@ -58,7 +66,8 @@ function update() {
     ships: GAME.getShips(),
     asteroids: GAME.getAsteroids(),
     bullets: GAME.getBullets(),
-    rank: RANK.getAlltime(),
+    alltime: RANK.getAlltime(),
+    rank: RANK.getRankings(),
   });
   GAME.update();
   RANK.update();
@@ -66,5 +75,8 @@ function update() {
 
 const gameLoop = new setInterval(update, FPS);
 
+//////////////////////////////////////////////////////////////////
+// server setup
+//////////////////////////////////////////////////////////////////
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}...`));

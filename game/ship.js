@@ -10,9 +10,6 @@ class Score {
   plus(v = 1) {
     this.value += v;
   }
-  get() {
-    return this.value;
-  }
 }
 
 class Ship {

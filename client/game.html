@@ -5,16 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Space Ships</title>
-    <script src="p5.min.js"></script>
   </head>
   <style>
     body {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      overflow: hidden;
     }
   </style>
   <body>
+    <div id="game"></div>
     <script>
       if (
         !window.sessionStorage.getItem("username") ||
@@ -23,10 +24,7 @@
         window.location = "/";
       }
     </script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="ship.js"></script>
-    <script src="asteroid.js"></script>
-    <script src="bullet.js"></script>
-    <script src="index.js"></script>
+    <script src="/socket.io/socket.io.min.js"></script>
+    <script src="../dist/bundle.js"></script>
   </body>
 </html>

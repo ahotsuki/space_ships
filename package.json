@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "nodemon index.js --ignore client/*"
+    "test": "nodemon index.js --ignore client/*",
+    "client:dev": "webpack watch --mode development",
+    "client:prod": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +15,9 @@
   "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^4.3.1"
+  },
+  "devDependencies": {
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1"
   }
 }

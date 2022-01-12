@@ -79,7 +79,7 @@ class Game {
   }
 
   gameOver(ship) {
-    this.io.to(ship.id).emit("gameover", { score: ship.score.get() });
+    this.io.to(ship.id).emit("gameover", { score: ship.score.value });
   }
 
   checkCollision() {
