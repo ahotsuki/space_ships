@@ -7,8 +7,8 @@ class Score {
     this.id = id;
   }
 
-  plus(v = 1) {
-    this.value += v;
+  plus(p) {
+    this.value += p;
   }
 }
 
@@ -26,20 +26,33 @@ class Ship {
     this.#size = size;
     this.speed = 0;
     this.acc = 0.1;
-    this.topSpeed = 4;
-    this.rotSpeed = Math.PI / 20;
     this.lines = [];
     this.boosting = false;
     this.#GAME = GAME;
     this.id = id;
     this.steering = 0;
-    this.fireRate = 1;
-    this.bulletRange = 100;
-    this.bulletSpeed = 6;
+    this.color = [0, 255, 0];
+    this.score = new Score(id);
+
+    this.Lvl = 1;
+
+    // health
+    this.hp = 1;
+    this.maxhp = 1;
+    this.healthLvl = 1; // max 6
+
+    // weapon
+    this.weaponLvl = 1; // min 1 max 6
+    this.fireRate = 1; // min 1 max 6
+    this.bulletRange = 100; // min 100 max 600
+    this.bulletSpeed = 2; // min 2 max 12
     this.load = 0;
     this.firing = false;
-    this.color = [255, 255, 255];
-    this.score = new Score(id);
+
+    // movement
+    this.movementLvl = 1;
+    this.topSpeed = 2; // min 2 max 12
+    this.rotSpeed = Math.PI / 120; // min 120 max 20
 
     const ts = arrayMultiply(trianglePnt(Math.PI / 6), this.#size);
     this.points.push([this.x + (this.#size * 2) / 5, this.y]);
@@ -64,6 +77,13 @@ class Ship {
     this.#forward();
     if (this.firing) this.#fire();
     this.velocity = arrayMultiply(this.velocity, this.friction);
+    this.updateColor();
+  }
+
+  updateColor() {
+    if (this.hp <= this.maxhp * 0.3) this.color = [255, 0, 0];
+    else if (this.hp <= this.maxhp * 0.8) this.color = [255, 255, 0];
+    else this.color = [0, 255, 0];
   }
 
   #fire() {
@@ -102,6 +122,65 @@ class Ship {
   release() {
     this.speed = 0;
     this.boosting = false;
+  }
+
+  upgradeHealth() {
+    if (this.healthLvl > 5) return false;
+    if (this.score.value < 2 ** this.healthLvl && !this.#GAME.GOD) return false;
+    this.score.value -= 2 ** this.healthLvl;
+    this.healthLvl++;
+    this.maxhp = 2 ** (this.healthLvl - 1);
+    this.Lvl++;
+    if (this.Lvl > 15) this.Lvl = "max";
+    return true;
+  }
+
+  upgradeWeapon() {
+    if (this.weaponLvl > 5) return false;
+    if (this.score.value < 2 ** this.weaponLvl && !this.#GAME.GOD) return false;
+    this.score.value -= 2 ** this.weaponLvl;
+    this.weaponLvl++;
+    this.fireRate = this.weaponLvl;
+    this.bulletSpeed = this.weaponLvl * 2;
+    this.bulletRange = this.weaponLvl * 100;
+    this.Lvl++;
+    if (this.Lvl > 15) this.Lvl = "max";
+    return true;
+  }
+
+  upgradeMovement() {
+    if (this.movementLvl > 5) return false;
+    if (this.score.value < 2 ** this.movementLvl && !this.#GAME.GOD)
+      return false;
+    this.score.value -= 2 ** this.movementLvl;
+    this.movementLvl++;
+    this.topSpeed = this.movementLvl * 2;
+    this.rotSpeed = Math.PI / (120 - (this.movementLvl - 1) * 20);
+    this.Lvl++;
+    if (this.Lvl > 15) this.Lvl = "max";
+    return true;
+  }
+
+  updateScore(lvl, asteroid = true, collide = false) {
+    let score;
+    let diff = this.maxhp - this.hp;
+    if (asteroid) {
+      score = 0;
+      if (lvl === 1) score += 5;
+      else if (lvl === 2) score += 10;
+      else if (lvl === 3) score += 20;
+    } else score = lvl;
+
+    if (diff > 0) {
+      if (diff >= score) {
+        this.hp += score;
+        if (collide && this.hp < this.maxhp) this.hp++;
+      } else {
+        score = score - diff;
+        this.hp += diff;
+        this.score.plus(score);
+      }
+    } else this.score.plus(score);
   }
 
   #updateLines() {

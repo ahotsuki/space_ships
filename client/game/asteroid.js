@@ -6,7 +6,7 @@ export default class Asteroid {
 
   render(p) {
     p.push();
-    p.stroke(255, 255, 255);
+    p.stroke(...this.color);
     p.strokeWeight(1);
     this.lines.forEach((l) => p.line(...l[0], ...l[1]));
     p.pop();

@@ -1,18 +1,14 @@
-export default function (socket, Camera, gameSketch, Game) {
+export default function (socket, Camera, gameSketch, Game, Shop) {
   socket.emit("username", { uname: window.sessionStorage.getItem("username") });
 
   socket.on("setup", (data) => {
     Camera.game_width = data.width;
     Camera.game_height = data.height;
+    Shop.GOD = data.god;
     gameSketch.setup();
   });
 
-  let i = false;
   socket.on("update", (data) => {
-    if (!i) {
-      console.log(data);
-      i = !i;
-    }
     Game.setUpdates(data);
   });
 

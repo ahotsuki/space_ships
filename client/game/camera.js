@@ -15,12 +15,14 @@ export default class Camera {
   static y_perspective = 0;
   static rank = Rank;
   static score;
+  static ship;
 
   static update(my_ship, ranks) {
     this.rank.rankings = ranks;
     this.x_perspective = my_ship.x;
     this.y_perspective = my_ship.y;
     this.score = my_ship.score;
+    this.ship = my_ship;
   }
 
   static render(p) {
@@ -40,7 +42,7 @@ export default class Camera {
     p.textSize(20);
     let x = 35;
     let y = 35;
-    p.text(`Name: ${this.score.username}`, x, y);
+    p.text(`Name: ${this.score.username} Lvl ${this.ship.Lvl}`, x, y);
     p.textSize(14);
     p.fill(0, 255, 0);
     y += 20;
@@ -48,6 +50,34 @@ export default class Camera {
     p.fill(0, 150, 255);
     y += 14;
     p.text(`Rank: ${this.score.rank}`, x, y);
+    p.fill(255, 255, 0);
+    y += 14;
+    p.text(
+      `HP (Lvl ${this.ship.healthLvl <= 5 ? this.ship.healthLvl : "max"}): ${
+        this.ship.hp
+      }/${this.ship.maxhp}`,
+      x,
+      y
+    );
+    p.fill(255, 255, 0);
+    y += 14;
+    p.text(
+      `Weapon (Lvl ${this.ship.weaponLvl <= 5 ? this.ship.weaponLvl : "max"})`,
+      x,
+      y
+    );
+    p.fill(255, 255, 0);
+    y += 14;
+    p.text(
+      `Movement (Lvl ${
+        this.ship.movementLvl <= 5 ? this.ship.movementLvl : "max"
+      })`,
+      x,
+      y
+    );
+    p.fill(0, 160, 255);
+    y += 14;
+    p.text(`HEAL (Use Hotkey(4) to convert score to health.)`, x, y);
     p.pop();
   }
 }

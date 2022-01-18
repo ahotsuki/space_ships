@@ -7,7 +7,7 @@ const io = require("socket.io")(server);
 
 // game module setup
 const GameClass = require("./game/index");
-const GAME = new GameClass(1080, 720, 30, io);
+const GAME = new GameClass(1080, 720, 30, io, true);
 for (let i = 0; i < 1; i++) GAME.addAsteroid();
 const FPS = 1000 / GAME.FPS;
 
@@ -34,12 +34,43 @@ app.get("/score", (req, res) => {
   res.send({ ranks: RANK.getRankings(), alltime: RANK.getAlltime() });
 });
 
+app.post("/health", (req, res) => {
+  let ship = GAME.getShip(req.body.id);
+  ship.upgradeHealth();
+  res.send({ value: ship.healthLvl, cost: 2 ** ship.healthLvl });
+});
+
+app.post("/weapon", (req, res) => {
+  let ship = GAME.getShip(req.body.id);
+  ship.upgradeWeapon();
+  res.send({ value: ship.weaponLvl, cost: 2 ** ship.weaponLvl });
+});
+
+app.post("/movement", (req, res) => {
+  let ship = GAME.getShip(req.body.id);
+  ship.upgradeMovement();
+  res.send({ value: ship.movementLvl, cost: 2 ** ship.movementLvl });
+});
+
+app.post("/heal", (req, res) => {
+  let ship = GAME.getShip(req.body.id);
+  if ((ship.score.value > 0 || GAME.GOD) && ship.hp < ship.maxhp) {
+    ship.score.value--;
+    ship.hp++;
+  }
+  res.send({});
+});
+
 //////////////////////////////////////////////////////////////////
 // socket connection
 //////////////////////////////////////////////////////////////////
 io.on("connection", (socket) => {
   console.log("Client connected.");
-  socket.emit("setup", { width: GAME.WIDTH, height: GAME.HEIGHT });
+  socket.emit("setup", {
+    width: GAME.WIDTH,
+    height: GAME.HEIGHT,
+    god: GAME.GOD,
+  });
   GAME.addShip(socket.id);
   RANK.setScore(socket.id, GAME.getShip(socket.id).score);
 

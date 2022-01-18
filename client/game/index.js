@@ -2,19 +2,16 @@ import p5 from "./p5";
 import socketProcesses from "./socket";
 import Camera from "./camera";
 import Game from "./game";
-import Ship from "./ship";
-import Asteroid from "./asteroid";
-import Bullet from "./bullet";
-import Rank from "./rank";
+import Shop from "./shop";
 
 const socket = io();
 const containerElement = document.body;
 Game.Camera = Camera;
 Game.socket = socket;
+Shop.socket = socket;
+Shop.game = Game;
 
-////////////////////////////////////////////////////////////////////////////////
 // p5 processes
-////////////////////////////////////////////////////////////////////////////////
 const sketch = (p) => {
   p.setup = function () {
     p.createCanvas(Camera.width || 0, Camera.height || 0);
@@ -42,7 +39,8 @@ const sketch = (p) => {
 
 const gameSketch = new p5(sketch, containerElement);
 
-////////////////////////////////////////////////////////////////////////////////
 // socket processes
-////////////////////////////////////////////////////////////////////////////////
-socketProcesses(socket, Camera, gameSketch, Game);
+socketProcesses(socket, Camera, gameSketch, Game, Shop);
+
+// shop
+Shop.shop();

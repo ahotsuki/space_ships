@@ -6,7 +6,13 @@ export default class Ship {
 
   render(p) {
     p.push();
-    p.stroke(255, 255, 255);
+    p.fill(255, 255, 255);
+    p.text(
+      `${this.score.username} : lvl ${this.Lvl}`,
+      this.x - this.score.username.length * 4 - 10,
+      this.y - 25
+    );
+    p.stroke(...this.color);
     p.strokeWeight(2);
     this.lines.forEach((l) => p.line(...l));
     p.pop();

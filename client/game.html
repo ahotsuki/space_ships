@@ -7,14 +7,75 @@
     <title>Space Ships</title>
   </head>
   <style>
+    *::selection {
+      background: none;
+    }
     body {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       overflow: hidden;
+      position: relative;
+    }
+    #shop {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: transparent;
+      color: rgb(230, 240, 230);
+      border: 1px solid green;
+      padding: 0.5em;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .shop-item {
+      padding: 0.2em;
+    }
+    .shop-title {
+      display: inline-block;
+      pointer-events: none;
+    }
+    .plusbtn {
+      background: rgba(0, 0, 0, 0);
+      color: rgb(86, 238, 15);
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .cost {
+      color: gold;
+    }
+    .desc {
+      font-style: italic;
+      color: rgb(82, 185, 172);
+      pointer-events: none;
     }
   </style>
   <body>
+    <div id="shop">
+      <h3>SHOP</h3>
+      <div class="shop-item">
+        <h4 class="shop-title">
+          Health<span id="health-cost" class="cost">(2p)</span>
+        </h4>
+        <button class="plusbtn" id="health">+</button>
+        <span class="desc">(Hotkey (1) for fast upgrade.)</span>
+      </div>
+      <div class="shop-item">
+        <h4 class="shop-title">
+          Weapon<span id="weapon-cost" class="cost">(2p)</span>
+        </h4>
+        <button class="plusbtn" id="weapon">+</button>
+        <span class="desc">(Hotkey (2) for fast upgrade.)</span>
+      </div>
+      <div class="shop-item">
+        <h4 class="shop-title">
+          Movement<span id="movement-cost" class="cost">(2p)</span>
+        </h4>
+        <button class="plusbtn" id="movement">+</button>
+        <span class="desc">(Hotkey (3) for fast upgrade.)</span>
+      </div>
+    </div>
     <div id="game"></div>
     <script>
       if (

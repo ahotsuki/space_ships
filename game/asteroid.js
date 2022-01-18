@@ -8,11 +8,12 @@ class Asteroid {
     this.y = y;
     this.lvl = lvl;
     this.lines = [];
+    this.hp = 0;
     this.color = [255, 255, 255];
     this.#GAME = GAME;
     this.heading = (Math.floor(Math.random() * 360) * Math.PI) / 180;
-    // this.speed = Math.floor(Math.random() * 6);
-    this.speed = 0;
+    this.speed = Math.floor(Math.random() * 6);
+    // this.speed = 0;
     this.vx = Math.cos(this.heading) * this.speed;
     this.vy = Math.sin(this.heading) * this.speed;
 
@@ -31,6 +32,7 @@ class Asteroid {
     this.y += this.vy;
     this.#movePnts();
     this.#updateLines();
+    this.#updateColor();
   }
 
   die() {
@@ -46,8 +48,14 @@ class Asteroid {
   }
 
   #determineSize(lvl) {
-    if (lvl === 1) return 20;
-    if (lvl === 2) return 40;
+    if (lvl === 1) {
+      this.hp = 5;
+      return 20;
+    } else if (lvl === 2) {
+      this.hp = 10;
+      return 40;
+    }
+    this.hp = 20;
     return 80;
   }
 
@@ -78,6 +86,22 @@ class Asteroid {
       if (i !== 5) this.lines.push([p, this.#points[i + 1]]);
       else this.lines.push([p, this.#points[0]]);
     });
+  }
+
+  #updateColor() {
+    if (this.lvl === 1) {
+      if (this.hp > 4) this.color = [255, 255, 255];
+      else if (this.hp > 1) this.color = [255, 255, 0];
+      else this.color = [255, 0, 0];
+    } else if (this.lvl === 2) {
+      if (this.hp > 7) this.color = [255, 255, 255];
+      else if (this.hp > 3) this.color = [255, 255, 0];
+      else this.color = [255, 0, 0];
+    } else {
+      if (this.hp > 14) this.color = [255, 255, 255];
+      else if (this.hp > 6) this.color = [255, 255, 0];
+      else this.color = [255, 0, 0];
+    }
   }
 }
 

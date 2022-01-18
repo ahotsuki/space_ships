@@ -1,5 +1,6 @@
 export default class Rank {
   static rankings = [];
+
   static render(p, w, h) {
     this.rankings = this.rankings.sort((a, b) => {
       if (a[1] === b[1]) return 0;
