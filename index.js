@@ -8,7 +8,7 @@ const io = require("socket.io")(server);
 // game module setup
 const GameClass = require("./game/index");
 const GAME = new GameClass(1080, 720, 30, io, true);
-for (let i = 0; i < 1; i++) GAME.addAsteroid();
+for (let i = 0; i < 2; i++) GAME.addAsteroid();
 const FPS = 1000 / GAME.FPS;
 
 // rank module setup

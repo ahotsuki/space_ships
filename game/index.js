@@ -20,7 +20,16 @@ class Game {
   }
 
   addShip(id) {
-    this.SHIPS.set(id, new Ship(100, 100, 30, this, id));
+    this.SHIPS.set(
+      id,
+      new Ship(
+        Math.floor(Math.random() * (this.WIDTH - 100)) + 50,
+        Math.floor(Math.random() * (this.HEIGHT - 100)) + 50,
+        30,
+        this,
+        id
+      )
+    );
   }
 
   getShips() {
